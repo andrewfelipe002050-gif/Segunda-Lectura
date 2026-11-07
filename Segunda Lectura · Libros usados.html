@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- =========================================================
+       SITIO DE DEMOSTRACIÓN: "Segunda Lectura", librería de libros usados.
+       Negocio ficticio, hecho como pieza de portafolio.
+       Secciones: inicio · cómo funciona · catálogo · vende tus libros · preguntas · contacto
+       ========================================================= -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Segunda Lectura · Libros usados</title>
+  <!-- La descripción es lo que Google muestra debajo del título en los resultados (SEO) -->
+  <meta name="description" content="Compramos, vendemos e intercambiamos libros usados en buen estado. Catálogo en línea, pedidos por WhatsApp y cotización inmediata de tus libros.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ---------- VARIABLES ---------- */
+    :root {
+      --verde: #1F3B2D;       /* color principal: encabezado, textos fuertes */
+      --verde-claro: #E7EEE9;
+      --terracota: #C2552D;   /* acento: botones y precios */
+      --fondo: #FAF8F4;
+      --blanco: #FFFFFF;
+      --texto: #22281F;
+      --gris: #6A6F68;
+      --borde: #E3E0D8;
+      --radio: 14px;
+      --sombra: 0 10px 30px rgba(31, 59, 45, 0.10);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }   /* el menú baja suavemente a cada sección */
+    body { margin: 0; font-family: "DM Sans", system-ui, sans-serif; color: var(--texto); background: var(--fondo); line-height: 1.55; }
+    h1, h2, h3 { font-family: "DM Serif Display", Georgia, serif; font-weight: 400; margin: 0; line-height: 1.1; }
+    a { color: inherit; }
+    .contenedor { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+    section { padding: 88px 0; scroll-margin-top: 64px; }
+    .antetitulo { text-transform: uppercase; letter-spacing: 0.12em; font-size: 0.78rem; font-weight: 700; color: var(--terracota); margin-bottom: 12px; }
+    .titulo-seccion { font-size: clamp(2rem, 4vw, 2.8rem); color: var(--verde); max-width: 640px; }
+    .intro-seccion { color: var(--gris); max-width: 560px; margin: 14px 0 40px; font-size: 1.05rem; }
+
+    /* ---------- BOTONES ---------- */
+    .boton {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 24px; border-radius: 999px; border: none;
+      font: inherit; font-weight: 700; text-decoration: none; cursor: pointer;
+      transition: transform 0.15s, background 0.15s;
+    }
+    .boton:hover { transform: translateY(-2px); }
+    .boton.principal { background: var(--terracota); color: var(--blanco); }
+    .boton.principal:hover { background: #A84724; }
+    .boton.secundario { background: transparent; color: var(--blanco); border: 1.5px solid rgba(255,255,255,0.5); }
+
+    /* ---------- AVISO DE DEMO ---------- */
+    .aviso-demo { background: #F3D9B1; color: var(--verde); text-align: center; font-size: 0.85rem; padding: 8px 16px; }
+
+    /* ---------- MENÚ ---------- */
+    nav { position: sticky; top: 0; z-index: 10; background: rgba(31, 59, 45, 0.97); backdrop-filter: blur(6px); }
+    nav .contenedor { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .logo { font-family: "DM Serif Display", serif; font-size: 1.45rem; color: var(--blanco); text-decoration: none; }
+    .logo em { color: #F3B28F; }
+    .menu { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; }
+    .menu a { color: #DCE6DF; text-decoration: none; font-size: 0.95rem; }
+    .menu a:hover { color: var(--blanco); }
+    .boton-menu { display: none; background: none; border: none; color: var(--blanco); font-size: 1.6rem; cursor: pointer; }
+    @media (max-width: 760px) {
+      .boton-menu { display: block; }
+      .menu { display: none; position: absolute; top: 64px; left: 0; right: 0; flex-direction: column; gap: 0; background: var(--verde); padding: 8px 24px 16px; }
+      .menu.abierto { display: flex; }
+      .menu a { display: block; padding: 10px 0; }
+    }
+
+    /* ---------- INICIO (HERO) ---------- */
+    .hero { background: var(--verde); color: var(--blanco); padding: 80px 0 96px; overflow: hidden; }
+    .hero .contenedor { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; }
+    .hero h1 { font-size: clamp(2.6rem, 6vw, 4.4rem); }
+    .hero h1 em { color: #F3B28F; }
+    .hero p { color: #CFDBD3; font-size: 1.15rem; max-width: 500px; margin: 20px 0 32px; }
+    .hero .acciones { display: flex; gap: 14px; flex-wrap: wrap; }
+    .cifras-hero { display: flex; gap: 36px; margin-top: 44px; }
+    .cifras-hero strong { display: block; font-family: "DM Serif Display", serif; font-size: 2rem; color: #F3B28F; font-weight: 400; }
+    .cifras-hero span { font-size: 0.85rem; color: #AFC2B5; }
+
+    /* Pila de libros dibujada solo con CSS (no necesita imágenes) */
+    .estante { display: flex; align-items: flex-end; justify-content: center; gap: 6px; height: 340px; }
+    .lomo {
+      width: 52px; border-radius: 4px 4px 2px 2px;
+      display: flex; align-items: center; justify-content: center;
+      writing-mode: vertical-rl; transform-origin: bottom;
+      font-family: "DM Serif Display", serif; font-size: 0.95rem; color: rgba(255,255,255,0.92);
+      box-shadow: inset -6px 0 0 rgba(0,0,0,0.12);
+      overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 12px 0;
+    }
+    .lomo:nth-child(odd) { width: 44px; }
+    @media (max-width: 860px) {
+      .hero .contenedor { grid-template-columns: 1fr; }
+      .estante { height: 220px; }
+      .cifras-hero { gap: 20px; }
+      .lomo { font-size: 0.75rem; }
+    }
+
+    /* ---------- CÓMO FUNCIONA ---------- */
+    .pasos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    @media (max-width: 860px) { .pasos { grid-template-columns: 1fr; } }
+    .paso { background: var(--blanco); border: 1px solid var(--borde); border-radius: var(--radio); padding: 32px 28px; }
+    .icono-paso { width: 56px; height: 56px; border-radius: 50%; background: var(--verde-claro); color: var(--verde); display: grid; place-items: center; margin-bottom: 20px; }
+    .icono-paso svg { width: 26px; height: 26px; }
+    .paso h3 { font-size: 1.5rem; color: var(--verde); margin-bottom: 10px; }
+    .paso p { color: var(--gris); margin: 0; }
+
+    /* ---------- CATÁLOGO ---------- */
+    #catalogo { background: var(--blanco); }
+    .controles { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px; }
+    .controles input { flex: 1 1 260px; }
+    input, select, textarea {
+      padding: 12px 14px; border: 1px solid var(--borde); border-radius: 10px;
+      font: inherit; background: var(--blanco); color: var(--texto);
+    }
+    input:focus, select:focus, textarea:focus { outline: 2px solid var(--terracota); border-color: transparent; }
+    .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+    .chip { padding: 8px 16px; border-radius: 999px; border: 1px solid var(--borde); background: var(--blanco); font: inherit; font-size: 0.9rem; cursor: pointer; }
+    .chip.activo { background: var(--verde); color: var(--blanco); border-color: var(--verde); }
+
+    .grilla { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 24px; }
+    .libro { display: flex; flex-direction: column; border-radius: var(--radio); transition: transform 0.2s; }
+    .libro:hover { transform: translateY(-4px); }
+    /* Portada generada con CSS: color de fondo + título */
+    .portada {
+      aspect-ratio: 2 / 3; border-radius: 8px; padding: 20px 18px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      color: var(--blanco); box-shadow: var(--sombra); position: relative; overflow: hidden;
+    }
+    .portada::before { content: ""; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,0.18); }
+    .portada .t { font-family: "DM Serif Display", serif; font-size: 1.35rem; line-height: 1.15; }
+    .portada .a { font-size: 0.8rem; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.08em; }
+    .info-libro { padding: 14px 2px 0; display: flex; flex-direction: column; flex: 1; }
+    .info-libro h3 { font-family: "DM Sans", sans-serif; font-weight: 700; font-size: 1rem; }
+    .info-libro .autor { color: var(--gris); font-size: 0.9rem; }
+    .fila-precio { display: flex; justify-content: space-between; align-items: center; margin: 10px 0 12px; }
+    .precio { font-weight: 700; color: var(--terracota); font-size: 1.1rem; }
+    .estado { font-size: 0.75rem; padding: 3px 10px; border-radius: 999px; background: var(--verde-claro); color: var(--verde); }
+    .pedir { margin-top: auto; padding: 10px; border-radius: 10px; border: 1.5px solid var(--verde); background: transparent; color: var(--verde); font: inherit; font-weight: 700; cursor: pointer; text-align: center; text-decoration: none; }
+    .pedir:hover { background: var(--verde); color: var(--blanco); }
+    .sin-resultados { grid-column: 1 / -1; text-align: center; color: var(--gris); padding: 40px 0; }
+
+    /* ---------- VENDE TUS LIBROS (COTIZADOR) ---------- */
+    .cotizador { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    @media (max-width: 860px) { .cotizador { grid-template-columns: 1fr; } }
+    .formulario { background: var(--blanco); border: 1px solid var(--borde); border-radius: var(--radio); padding: 32px; box-shadow: var(--sombra); }
+    .formulario label { display: block; font-weight: 700; font-size: 0.9rem; margin: 18px 0 8px; }
+    .formulario label:first-child { margin-top: 0; }
+    .formulario select, .formulario input { width: 100%; }
+    .contador { display: flex; align-items: center; gap: 12px; }
+    .contador button { width: 44px; height: 44px; border-radius: 10px; border: 1px solid var(--borde); background: var(--fondo); font-size: 1.3rem; cursor: pointer; }
+    .contador output { font-size: 1.3rem; font-weight: 700; min-width: 32px; text-align: center; }
+    .resultado { margin-top: 26px; padding: 22px; border-radius: 12px; background: var(--verde); color: var(--blanco); }
+    .resultado .monto { font-family: "DM Serif Display", serif; font-size: 2.4rem; color: #F3B28F; }
+    .resultado small { color: #CFDBD3; display: block; margin-top: 4px; }
+    .lista-condiciones { list-style: none; padding: 0; margin: 0; display: grid; gap: 18px; }
+    .lista-condiciones li { display: flex; gap: 14px; }
+    .check { flex: 0 0 28px; height: 28px; border-radius: 50%; background: var(--terracota); color: var(--blanco); display: grid; place-items: center; font-size: 0.85rem; font-weight: 700; }
+
+    /* ---------- PREGUNTAS FRECUENTES ---------- */
+    #preguntas { background: var(--verde-claro); }
+    details { background: var(--blanco); border-radius: 12px; padding: 20px 24px; margin-bottom: 12px; max-width: 780px; }
+    summary { font-weight: 700; cursor: pointer; list-style: none; display: flex; justify-content: space-between; color: var(--verde); }
+    summary::after { content: "+"; font-size: 1.4rem; line-height: 1; color: var(--terracota); }
+    details[open] summary::after { content: "–"; }
+    details p { color: var(--gris); margin: 12px 0 0; }
+
+    /* ---------- CONTACTO Y PIE ---------- */
+    .contacto { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    @media (max-width: 760px) { .contacto { grid-template-columns: 1fr; } }
+    .dato-contacto h3 { font-size: 1.3rem; color: var(--verde); margin-bottom: 8px; }
+    .dato-contacto p { margin: 0; color: var(--gris); }
+    footer { background: var(--verde); color: #AFC2B5; padding: 32px 0; font-size: 0.9rem; }
+    footer .contenedor { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+    /* Mensaje flotante (aparece al pedir un libro) */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 120px);
+      background: var(--texto); color: var(--blanco); padding: 14px 22px; border-radius: 12px;
+      box-shadow: var(--sombra); transition: transform 0.3s, opacity 0.3s; z-index: 20; opacity: 0; pointer-events: none; max-width: 90vw; font-size: 0.95rem;
+    }
+    .toast.visible { transform: translate(-50%, 0); opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <div class="aviso-demo">Sitio de demostración · Negocio, precios y datos de contacto ficticios</div>
+
+  <!-- ================= MENÚ ================= -->
+  <nav>
+    <div class="contenedor">
+      <a href="#inicio" class="logo">Segunda <em>Lectura</em></a>
+      <button class="boton-menu" id="boton-menu" aria-label="Abrir menú">☰</button>
+      <ul class="menu" id="menu">
+        <li><a href="#como-funciona">Cómo funciona</a></li>
+        <li><a href="#catalogo">Catálogo</a></li>
+        <li><a href="#vender">Vende tus libros</a></li>
+        <li><a href="#preguntas">Preguntas</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ================= INICIO ================= -->
+  <header class="hero" id="inicio">
+    <div class="contenedor">
+      <div>
+        <div class="antetitulo" style="color:#F3B28F">Libros usados · Compra, venta e intercambio</div>
+        <h1>Todo libro merece una <em>segunda lectura</em></h1>
+        <p>Encuentra clásicos, novelas y libros de estudio a precios justos. Y si tienes libros quietos en la casa, te los compramos.</p>
+        <div class="acciones">
+          <a href="#catalogo" class="boton principal">Ver catálogo</a>
+          <a href="#vender" class="boton secundario">Vender mis libros</a>
+        </div>
+        <div class="cifras-hero">
+          <div><strong>+2.000</strong><span>títulos en tienda</span></div>
+          <div><strong>40–70%</strong><span>menos que un libro nuevo</span></div>
+          <div><strong>24 h</strong><span>para cotizar tus libros</span></div>
+        </div>
+      </div>
+      <div class="estante" id="estante" aria-hidden="true"></div>
+    </div>
+  </header>
+
+  <!-- ================= CÓMO FUNCIONA ================= -->
+  <section id="como-funciona">
+    <div class="contenedor">
+      <div class="antetitulo">Cómo funciona</div>
+      <h2 class="titulo-seccion">Tres formas de darle vida a un libro</h2>
+      <p class="intro-seccion">Puedes comprar, vender o cambiar. Todo se coordina por WhatsApp, sin registros ni contraseñas.</p>
+      <div class="pasos">
+        <article class="paso">
+          <div class="icono-paso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+          <h3>Compra</h3>
+          <p>Elige en el catálogo, pídelo por WhatsApp y recógelo en la tienda o recíbelo en tu casa.</p>
+        </article>
+        <article class="paso">
+          <div class="icono-paso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <h3>Vende</h3>
+          <p>Calcula cuánto te pagamos con el cotizador, tráelos y recibe el pago en efectivo o por transferencia.</p>
+        </article>
+        <article class="paso">
+          <div class="icono-paso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></div>
+          <h3>Intercambia</h3>
+          <p>Cambia tus libros por otros de la tienda y recibe un 20% más de valor que si los vendieras.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CATÁLOGO ================= -->
+  <section id="catalogo">
+    <div class="contenedor">
+      <div class="antetitulo">Catálogo</div>
+      <h2 class="titulo-seccion">Disponibles esta semana</h2>
+      <p class="intro-seccion">Cada libro está revisado. El estado indica cómo llega a tus manos.</p>
+
+      <div class="controles">
+        <input id="buscar" placeholder="Buscar por título o autor…" aria-label="Buscar libro">
+        <select id="orden" aria-label="Ordenar">
+          <option value="relevancia">Destacados</option>
+          <option value="menor">Precio: menor a mayor</option>
+          <option value="mayor">Precio: mayor a menor</option>
+        </select>
+      </div>
+      <div class="chips" id="chips"></div>
+      <div class="grilla" id="grilla"></div>
+    </div>
+  </section>
+
+  <!-- ================= VENDE TUS LIBROS ================= -->
+  <section id="vender">
+    <div class="contenedor cotizador">
+      <div>
+        <div class="antetitulo">Vende tus libros</div>
+        <h2 class="titulo-seccion">¿Cuánto valen los libros que ya leíste?</h2>
+        <p class="intro-seccion">Usa el cotizador para tener un valor aproximado. La oferta final la confirmamos cuando vemos los libros.</p>
+        <ul class="lista-condiciones">
+          <li><span class="check">✓</span><div><strong>Compramos</strong> novelas, clásicos, ensayo, libros universitarios e infantiles en buen estado.</div></li>
+          <li><span class="check">✓</span><div><strong>No compramos</strong> libros con hojas sueltas, humedad, hongos o muy subrayados.</div></li>
+          <li><span class="check">✓</span><div><strong>Bonus de intercambio:</strong> si en vez de efectivo eliges libros de la tienda, te damos 20% más.</div></li>
+        </ul>
+      </div>
+
+      <form class="formulario" id="cotizador">
+        <label for="tipo">Tipo de libro</label>
+        <select id="tipo">
+          <option value="8000">Novela o literatura</option>
+          <option value="15000">Universitario o técnico</option>
+          <option value="6000">Infantil o juvenil</option>
+          <option value="5000">Revistas o bolsillo</option>
+        </select>
+
+        <label for="condicion">Estado</label>
+        <select id="condicion">
+          <option value="1">Como nuevo</option>
+          <option value="0.75" selected>Buen estado (uso normal)</option>
+          <option value="0.5">Con detalles (subrayado leve, portada gastada)</option>
+        </select>
+
+        <label>Cantidad de libros</label>
+        <div class="contador">
+          <button type="button" id="menos" aria-label="Quitar un libro">−</button>
+          <output id="cantidad">5</output>
+          <button type="button" id="mas" aria-label="Agregar un libro">+</button>
+        </div>
+
+        <label><input type="checkbox" id="intercambio" style="width:auto;margin-right:8px">Prefiero intercambiar por libros de la tienda</label>
+
+        <div class="resultado" aria-live="polite">
+          <div>Te podríamos ofrecer aproximadamente</div>
+          <div class="monto" id="monto">$0</div>
+          <small id="detalle"></small>
+        </div>
+        <button type="submit" class="boton principal" style="width:100%;justify-content:center;margin-top:16px">Enviar cotización por WhatsApp</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ================= PREGUNTAS FRECUENTES ================= -->
+  <!-- <details> y <summary> crean el acordeón sin necesidad de JavaScript -->
+  <section id="preguntas">
+    <div class="contenedor">
+      <div class="antetitulo">Preguntas frecuentes</div>
+      <h2 class="titulo-seccion" style="margin-bottom:36px">Lo que más nos preguntan</h2>
+      <details open><summary>¿Hacen envíos?</summary><p>Sí. Enviamos a toda la ciudad y a municipios cercanos. El costo depende de la zona y te lo confirmamos por WhatsApp antes de pagar.</p></details>
+      <details><summary>¿Cómo pago?</summary><p>En efectivo en la tienda, por transferencia o con billeteras digitales. Pagas cuando confirmamos que el libro está disponible.</p></details>
+      <details><summary>¿Puedo apartar un libro?</summary><p>Te lo guardamos hasta 48 horas sin costo.</p></details>
+      <details><summary>¿Buscan libros por encargo?</summary><p>Sí. Escríbenos el título y te avisamos cuando llegue uno a la tienda.</p></details>
+    </div>
+  </section>
+
+  <!-- ================= CONTACTO ================= -->
+  <section id="contacto">
+    <div class="contenedor">
+      <div class="antetitulo">Contacto</div>
+      <h2 class="titulo-seccion" style="margin-bottom:36px">Pásate por la tienda</h2>
+      <div class="contacto">
+        <div class="dato-contacto"><h3>Dirección</h3><p>Calle de Ejemplo # 00-00<br>Local 1 (dirección ficticia)</p></div>
+        <div class="dato-contacto"><h3>Horario</h3><p>Lunes a sábado: 9:00 a. m. – 7:00 p. m.<br>Domingos y festivos: cerrado</p></div>
+        <div class="dato-contacto"><h3>WhatsApp</h3><p>300 000 0000 (número de ejemplo)<br>Respondemos el mismo día</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="contenedor">
+      <span>© Segunda Lectura · Sitio de demostración</span>
+      <span>Hecho a mano con HTML, CSS y JavaScript</span>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    // =========================================================
+    // DATOS DEL CATÁLOGO
+    // En una tienda real, esto vendría de una hoja de cálculo o una base de datos.
+    // =========================================================
+    const LIBROS = [
+      { titulo: "Cien años de soledad", autor: "Gabriel García Márquez", cat: "Literatura latinoamericana", precio: 38000, estado: "Como nuevo", color: "#C2552D" },
+      { titulo: "Crimen y castigo", autor: "Fiódor Dostoievski", cat: "Clásicos", precio: 32000, estado: "Buen estado", color: "#5B2333" },
+      { titulo: "El túnel", autor: "Ernesto Sabato", cat: "Literatura latinoamericana", precio: 18000, estado: "Buen estado", color: "#2E4057" },
+      { titulo: "Rayuela", autor: "Julio Cortázar", cat: "Literatura latinoamericana", precio: 29000, estado: "Con detalles", color: "#8C6A2F" },
+      { titulo: "1984", autor: "George Orwell", cat: "Clásicos", precio: 24000, estado: "Como nuevo", color: "#D08C60" },
+      { titulo: "Principios de economía", autor: "N. Gregory Mankiw", cat: "Universitarios", precio: 85000, estado: "Buen estado", color: "#3D5A80" },
+      { titulo: "Sapiens", autor: "Yuval Noah Harari", cat: "Ensayo", precio: 42000, estado: "Como nuevo", color: "#A44A3F" },
+      { titulo: "Pensar rápido, pensar despacio", autor: "Daniel Kahneman", cat: "Ensayo", precio: 45000, estado: "Buen estado", color: "#4A5D23" },
+      { titulo: "El principito", autor: "Antoine de Saint-Exupéry", cat: "Infantil y juvenil", precio: 15000, estado: "Buen estado", color: "#2A6F97" },
+      { titulo: "La vorágine", autor: "José Eustasio Rivera", cat: "Literatura latinoamericana", precio: 16000, estado: "Con detalles", color: "#40531B" },
+      { titulo: "Cálculo de una variable", autor: "James Stewart", cat: "Universitarios", precio: 95000, estado: "Buen estado", color: "#6B2737" },
+      { titulo: "Orgullo y prejuicio", autor: "Jane Austen", cat: "Clásicos", precio: 22000, estado: "Como nuevo", color: "#9C6644" },
+    ];
+
+    const NUMERO_WHATSAPP = "573000000000";   // número ficticio: aquí iría el del negocio
+    const $ = (id) => document.getElementById(id);
+
+    // Formato de pesos colombianos: 38000 → "$38.000"
+    const pesos = (n) => "$" + Math.round(n).toLocaleString("es-CO");
+
+    // ---------- Estante decorativo del inicio ----------
+    $("estante").innerHTML = LIBROS.slice(0, 7).map((l, i) => {
+      const altura = [88, 100, 80, 94, 72, 98, 84][i];
+      const giro = i === 6 ? "rotate(-8deg)" : "none";   // el último libro va inclinado
+      const texto = l.titulo.length > 18 ? l.titulo.split(" ").pop() : l.titulo;   // títulos largos: solo la última palabra
+      return `<div class="lomo" style="height:${altura}%;background:${l.color};transform:${giro}">${texto}</div>`;
+    }).join("");
+
+    // ---------- Menú en celular ----------
+    $("boton-menu").addEventListener("click", () => $("menu").classList.toggle("abierto"));
+    document.querySelectorAll(".menu a").forEach((a) => a.addEventListener("click", () => $("menu").classList.remove("abierto")));
+
+    // ---------- Mensaje flotante ----------
+    let temporizador;
+    function avisar(texto) {
+      $("toast").textContent = texto;
+      $("toast").classList.add("visible");
+      clearTimeout(temporizador);
+      temporizador = setTimeout(() => $("toast").classList.remove("visible"), 3500);
+    }
+
+    // =========================================================
+    // CATÁLOGO: chips de categoría + búsqueda + orden
+    // =========================================================
+    let categoriaActiva = "Todos";
+    const categorias = ["Todos", ...new Set(LIBROS.map((l) => l.cat))];
+
+    function pintarChips() {
+      $("chips").innerHTML = categorias.map((c) =>
+        `<button class="chip ${c === categoriaActiva ? "activo" : ""}" data-cat="${c}">${c}</button>`
+      ).join("");
+    }
+
+    function pintarCatalogo() {
+      const texto = $("buscar").value.toLowerCase().trim();
+      let lista = LIBROS.filter((l) =>
+        (categoriaActiva === "Todos" || l.cat === categoriaActiva) &&
+        (l.titulo + " " + l.autor).toLowerCase().includes(texto)
+      );
+      if ($("orden").value === "menor") lista = [...lista].sort((a, b) => a.precio - b.precio);
+      if ($("orden").value === "mayor") lista = [...lista].sort((a, b) => b.precio - a.precio);
+
+      if (lista.length === 0) {
+        $("grilla").innerHTML = `<p class="sin-resultados">No lo tenemos ahora, pero podemos buscarlo por encargo. Escríbenos.</p>`;
+        return;
+      }
+      $("grilla").innerHTML = lista.map((l) => `
+        <article class="libro">
+          <div class="portada" style="background:${l.color}">
+            <div class="t">${l.titulo}</div>
+            <div class="a">${l.autor}</div>
+          </div>
+          <div class="info-libro">
+            <h3>${l.titulo}</h3>
+            <div class="autor">${l.autor}</div>
+            <div class="fila-precio">
+              <span class="precio">${pesos(l.precio)}</span>
+              <span class="estado">${l.estado}</span>
+            </div>
+            <a class="pedir" href="${enlaceWhatsApp("Hola, me interesa el libro «" + l.titulo + "» de " + l.autor + " (" + pesos(l.precio) + "). ¿Está disponible?")}" target="_blank" rel="noopener" data-titulo="${l.titulo}">Pedir por WhatsApp</a>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    // Arma un enlace de WhatsApp con el mensaje ya escrito
+    function enlaceWhatsApp(mensaje) {
+      return "https://wa.me/" + NUMERO_WHATSAPP + "?text=" + encodeURIComponent(mensaje);
+    }
+
+    $("chips").addEventListener("click", (e) => {
+      const chip = e.target.closest(".chip");
+      if (!chip) return;
+      categoriaActiva = chip.dataset.cat;
+      pintarChips();
+      pintarCatalogo();
+    });
+    $("buscar").addEventListener("input", pintarCatalogo);
+    $("orden").addEventListener("change", pintarCatalogo);
+
+    // En la demo el número es ficticio: avisamos en vez de abrir WhatsApp
+    $("grilla").addEventListener("click", (e) => {
+      const enlace = e.target.closest(".pedir");
+      if (!enlace) return;
+      e.preventDefault();
+      avisar("En la tienda real, esto abre WhatsApp con el pedido de «" + enlace.dataset.titulo + "» ya escrito.");
+    });
+
+    // =========================================================
+    // COTIZADOR: precio base × estado × cantidad (+20% si intercambia)
+    // =========================================================
+    let cantidad = 5;
+
+    function cotizar() {
+      const base = Number($("tipo").value);
+      const factor = Number($("condicion").value);
+      const intercambio = $("intercambio").checked;
+      let total = base * factor * cantidad;
+      if (intercambio) total *= 1.2;
+      total = Math.round(total / 500) * 500;   // redondeo a múltiplos de $500
+
+      $("cantidad").textContent = cantidad;
+      $("monto").textContent = pesos(total);
+      $("detalle").textContent = intercambio
+        ? "En crédito para libros de la tienda (incluye el 20% de bonus)"
+        : "En efectivo o transferencia · valor aproximado";
+      return total;
+    }
+
+    $("menos").addEventListener("click", () => { cantidad = Math.max(1, cantidad - 1); cotizar(); });
+    $("mas").addEventListener("click", () => { cantidad = Math.min(100, cantidad + 1); cotizar(); });
+    ["tipo", "condicion", "intercambio"].forEach((id) => $(id).addEventListener("change", cotizar));
+
+    $("cotizador").addEventListener("submit", (e) => {
+      e.preventDefault();
+      cotizar();
+      avisar("En la tienda real, esto abre WhatsApp con la cotización de " + cantidad + " libros ya escrita.");
+    });
+
+    // ---------- Arranque ----------
+    pintarChips();
+    pintarCatalogo();
+    cotizar();
+  </script>
+</body>
+</html>
